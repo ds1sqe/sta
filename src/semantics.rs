@@ -6,7 +6,7 @@ use crate::{
 };
 
 /// HACK: may panic
-fn input() -> Const {
+pub fn input() -> Const {
     let mut buffer = String::new();
     stdin().read_line(&mut buffer).unwrap();
     Const {
