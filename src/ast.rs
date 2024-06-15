@@ -1,3 +1,4 @@
+#[derive(Clone, Copy)]
 pub struct Label {
     pub id: i32,
 }
@@ -9,11 +10,13 @@ pub struct Const {
 }
 
 /// x <- X
+#[derive(Clone, Copy)]
 pub struct Variable {
     pub id: usize,
 }
 
 /// (.) ::= + | - | * ...
+#[derive(Clone, Copy)]
 pub enum BinaryOperator {
     Add,
     Sub,
@@ -21,12 +24,14 @@ pub enum BinaryOperator {
 }
 
 /// (<) ::= < | <= | == | ...
+#[derive(Clone, Copy)]
 pub enum Relation {
     Infeq,
     Sup,
 }
 
 /// E ::= n | x | E (.) E
+#[derive(Clone)]
 pub enum Expression {
     Con(Const),
     Var(Variable),
@@ -38,18 +43,21 @@ pub enum Expression {
 }
 
 /// B ::= x (<) n
+#[derive(Clone, Copy)]
 pub struct Cond {
     pub var: Variable,
     pub rel: Relation,
     pub con: Const,
 }
 
+#[derive(Clone)]
 pub struct LCom {
-    label: Label,
-    command: Box<Command>,
+    pub label: Label,
+    pub command: Box<Command>,
 }
 
 /// C ::= commands
+#[derive(Clone)]
 pub enum Command {
     /// skip
     Skip,
