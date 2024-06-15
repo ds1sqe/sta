@@ -3,13 +3,14 @@ pub struct Label {
 }
 
 /// n <- V
+#[derive(Clone, Copy)]
 pub struct Const {
     pub value: i32,
 }
 
 /// x <- X
 pub struct Variable {
-    pub value: i32,
+    pub id: usize,
 }
 
 /// (.) ::= + | - | * ...
@@ -49,7 +50,7 @@ pub struct LCom {
 }
 
 /// C ::= commands
-enum Command {
+pub enum Command {
     /// skip
     Skip,
     /// C; C
