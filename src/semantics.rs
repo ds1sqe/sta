@@ -1,7 +1,9 @@
+#![allow(dead_code)]
+
 use std::io::stdin;
 
 use crate::{
-    ast::{BinaryOperator, Command, Cond, Const, Expression, LCom, Relation, Variable},
+    ast::{BinaryOperator, Command, Cond, Const, Expression, LCom, Relation},
     memory::{read, write, Memory},
 };
 
@@ -10,7 +12,7 @@ pub fn input() -> Const {
     let mut buffer = String::new();
     stdin().read_line(&mut buffer).unwrap();
     Const {
-        value: buffer.parse::<i32>().unwrap(),
+        value: buffer.trim().parse::<i32>().unwrap(),
     }
 }
 

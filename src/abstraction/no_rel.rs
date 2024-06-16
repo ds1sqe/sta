@@ -2,7 +2,7 @@
 
 use crate::ast::{BinaryOperator, Const, Relation};
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Clone)]
 pub enum NrValue {
     Bottom,
     Top,
@@ -14,11 +14,11 @@ pub struct NrEnv {
     mem: Vec<NrValue>,
 }
 
-pub fn includes(left: NrValue, right: NrValue) -> bool {
-    left == NrValue::Bottom || right == NrValue::Top || left == right
+pub fn incl(left: &NrValue, right: &NrValue) -> bool {
+    *left == NrValue::Bottom || *right == NrValue::Top || *left == *right
 }
 
-pub fn nrv_cst(n: &Const) -> NrValue {
+pub fn cst(n: &Const) -> NrValue {
     if n.value < 0 {
         NrValue::Negative
     } else {
@@ -26,7 +26,7 @@ pub fn nrv_cst(n: &Const) -> NrValue {
     }
 }
 
-pub fn nrv_sat(rel: Relation, n: &Const, nrv: NrValue) -> NrValue {
+pub fn sat(rel: Relation, n: &Const, nrv: NrValue) -> NrValue {
     if nrv == NrValue::Bottom {
         NrValue::Bottom
     } else if rel == Relation::Infeq && n.value < 0 {
@@ -46,9 +46,9 @@ pub fn nrv_sat(rel: Relation, n: &Const, nrv: NrValue) -> NrValue {
     }
 }
 
-pub fn nrv_join(left: NrValue, right: NrValue) -> NrValue {
+pub fn join(left: &NrValue, right: &NrValue) -> NrValue {
     match (left, right) {
-        (NrValue::Bottom, any) | (any, NrValue::Bottom) => any,
+        (NrValue::Bottom, any) | (any, NrValue::Bottom) => any.clone(),
         (NrValue::Top, _)
         | (_, NrValue::Top)
         | (NrValue::Positive, NrValue::Negative)
@@ -58,7 +58,7 @@ pub fn nrv_join(left: NrValue, right: NrValue) -> NrValue {
     }
 }
 
-pub fn nrv_binop(bop: BinaryOperator, left: NrValue, right: NrValue) -> NrValue {
+pub fn binop(bop: BinaryOperator, left: NrValue, right: NrValue) -> NrValue {
     match (bop, left, right) {
         (_, NrValue::Bottom, _) | (_, _, NrValue::Bottom) => NrValue::Bottom,
 
@@ -103,8 +103,24 @@ impl NrEnv {
         self.mem.iter().any(|nrv| *nrv == NrValue::Bottom)
     }
 
-    pub fn is_le(&self, other: &Self) {
+    /// check other can hold self's nrv
+    pub fn is_le(&self, other: &Self) -> bool {
+        assert!(self.mem.len() == other.mem.len());
 
-        // self.mem.iter()
+        self.mem
+            .iter()
+            .zip(other.mem.iter())
+            .all(|(left_nrv, right_nrv)| incl(left_nrv, right_nrv))
+    }
+
+    pub fn join(&self, other: &Self) -> Self {
+        Self {
+            mem: self
+                .mem
+                .iter()
+                .zip(other.mem.iter())
+                .map(|(left, right)| join(left, right))
+                .collect(),
+        }
     }
 }

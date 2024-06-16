@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use crate::{
     ast::{Command, LCom, Label},
     memory::{write, Memory, State},
