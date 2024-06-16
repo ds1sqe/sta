@@ -1,3 +1,4 @@
+#[allow(dead_code)]
 #[derive(Clone, Copy)]
 pub struct Label {
     pub id: i32,
@@ -9,6 +10,18 @@ pub struct Const {
     pub value: i32,
 }
 
+impl PartialOrd for Const {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.value.cmp(&other.value))
+    }
+}
+
+impl PartialEq for Const {
+    fn eq(&self, other: &Self) -> bool {
+        self.value == other.value
+    }
+}
+
 /// x <- X
 #[derive(Clone, Copy)]
 pub struct Variable {
@@ -16,6 +29,7 @@ pub struct Variable {
 }
 
 /// (.) ::= + | - | * ...
+#[allow(dead_code)]
 #[derive(Clone, Copy)]
 pub enum BinaryOperator {
     Add,
@@ -24,13 +38,17 @@ pub enum BinaryOperator {
 }
 
 /// (<) ::= < | <= | == | ...
-#[derive(Clone, Copy)]
+#[allow(dead_code)]
+#[derive(PartialEq, Clone, Copy)]
 pub enum Relation {
+    /// <
     Infeq,
+    /// >=
     Sup,
 }
 
 /// E ::= n | x | E (.) E
+#[allow(dead_code)]
 #[derive(Clone)]
 pub enum Expression {
     Con(Const),
@@ -43,6 +61,7 @@ pub enum Expression {
 }
 
 /// B ::= x (<) n
+#[allow(dead_code)]
 #[derive(Clone, Copy)]
 pub struct Cond {
     pub var: Variable,
@@ -50,6 +69,7 @@ pub struct Cond {
     pub con: Const,
 }
 
+#[allow(dead_code)]
 #[derive(Clone)]
 pub struct LCom {
     pub label: Label,
@@ -57,6 +77,7 @@ pub struct LCom {
 }
 
 /// C ::= commands
+#[allow(dead_code)]
 #[derive(Clone)]
 pub enum Command {
     /// skip
