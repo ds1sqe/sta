@@ -1,7 +1,7 @@
 #[allow(dead_code)]
 #[derive(Clone, Copy)]
 pub struct Label {
-    pub id: i32,
+    pub id: usize,
 }
 
 /// n <- V

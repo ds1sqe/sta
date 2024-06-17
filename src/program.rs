@@ -7,18 +7,18 @@ use crate::{
 };
 
 pub struct Program {
-    ins: Vec<Command>,
+    pub ins: Vec<Command>,
 }
 
 impl Program {
     /// inputs a label and then returns the successor label
-    fn next<'a>(&'a self, label: &Label) -> &'a Label {
+    pub fn next<'a>(&'a self, label: &Label) -> &'a Label {
         todo!()
     }
 
     /// inputs a label and returns the command
-    fn find<'a>(&self, label: &Label) -> &'a Command {
-        todo!()
+    pub fn find<'a>(&'a self, label: &Label) -> &'a Command {
+        &self.ins[label.id]
     }
 
     pub fn step(&self, mem: &mut Memory, com: &LCom) -> State {
