@@ -10,8 +10,9 @@ pub enum NrValue {
     Negative,
 }
 
+#[derive(Clone)]
 pub struct NrEnv {
-    mem: Vec<NrValue>,
+    pub mem: Vec<NrValue>,
 }
 
 pub fn incl(left: &NrValue, right: &NrValue) -> bool {
@@ -26,23 +27,23 @@ pub fn cst(n: &Const) -> NrValue {
     }
 }
 
-pub fn sat(rel: Relation, n: &Const, nrv: NrValue) -> NrValue {
-    if nrv == NrValue::Bottom {
+pub fn sat(rel: &Relation, n: &Const, nrv: &NrValue) -> NrValue {
+    if *nrv == NrValue::Bottom {
         NrValue::Bottom
-    } else if rel == Relation::Infeq && n.value < 0 {
-        if nrv == NrValue::Positive {
+    } else if *rel == Relation::Infeq && n.value < 0 {
+        if *nrv == NrValue::Positive {
             NrValue::Bottom
         } else {
             NrValue::Negative
         }
-    } else if rel == Relation::Sup && n.value >= 0 {
-        if nrv == NrValue::Negative {
+    } else if *rel == Relation::Sup && n.value >= 0 {
+        if *nrv == NrValue::Negative {
             NrValue::Bottom
         } else {
             NrValue::Positive
         }
     } else {
-        nrv
+        nrv.clone()
     }
 }
 
@@ -58,7 +59,7 @@ pub fn join(left: &NrValue, right: &NrValue) -> NrValue {
     }
 }
 
-pub fn binop(bop: BinaryOperator, left: NrValue, right: NrValue) -> NrValue {
+pub fn binop(bop: &BinaryOperator, left: &NrValue, right: &NrValue) -> NrValue {
     match (bop, left, right) {
         (_, NrValue::Bottom, _) | (_, _, NrValue::Bottom) => NrValue::Bottom,
 

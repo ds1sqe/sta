@@ -68,6 +68,16 @@ pub struct Cond {
     pub rel: Relation,
     pub con: Const,
 }
+impl Cond {
+    pub fn negate(&self) -> Self {
+        let mut new_cond = *self;
+        match new_cond.rel {
+            Relation::Infeq => new_cond.rel = Relation::Sup,
+            Relation::Sup => new_cond.rel = Relation::Infeq,
+        }
+        new_cond
+    }
+}
 
 #[allow(dead_code)]
 #[derive(Clone)]
